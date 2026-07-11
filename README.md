@@ -146,3 +146,4 @@ For each vulnerability:
 ## Suggested interview explanation
 
 “I practised an end-to-end application security remediation workflow using a deliberately vulnerable API. I reviewed SAST/SCA-style findings, validated issues such as SQL injection, XSS, hardcoded secrets and broken access control, created remediation tickets, recommended secure coding fixes, verified remediation through tests and rescans, and documented evidence for audit and BAU handover.”
+
