@@ -3,7 +3,7 @@ name: Security and Test Pipeline
 on:
   pull_request:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test-and-security:
@@ -17,19 +17,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
 
       - name: Install dependencies
         run: npm install
 
-      - name: Run unit/security tests
+      - name: Run automated tests
         run: npm test
 
-      - name: Run SCA dependency audit
-        run: npm audit --audit-level=high
-        continue-on-error: true
+      - name: Install Snyk CLI
+        uses: snyk/actions/setup@master
 
-      - name: Run Semgrep SAST
-        uses: semgrep/semgrep-action@v1
-        with:
-          config: semgrep-rules.yml
-        continue-on-error: true
+      - name: Run Snyk Open Source scan - SCA
+        run: snyk test --severity-threshold=high
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Run Snyk Code scan - SAST
+        run: snyk code test --severity-threshold=high
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
