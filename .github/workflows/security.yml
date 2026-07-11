@@ -68,6 +68,9 @@ jobs:
       - name: Install Snyk CLI
         run: npm install --global snyk
 
+      - name: Confirm Snyk installation
+        run: snyk --version
+
       - name: Run Snyk Code scan
         run: snyk code test --severity-threshold=high
         env:
