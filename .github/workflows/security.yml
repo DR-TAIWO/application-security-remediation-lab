@@ -57,21 +57,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
 
-      - name: Install Snyk CLI
-        run: npm install --global snyk
+    - name: Install Snyk CLI
+      run: npm install --global snyk
 
-      - name: Confirm Snyk installation
-        run: snyk --version
+    - name: Confirm Snyk installation
+      run: snyk --version
 
-      - name: Run Snyk Code scan
-        run: snyk code test --severity-threshold=high
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    - name: Confirm Snyk token exists
+      shell: bash
+      run: |
+        if [ -z "$SNYK_TOKEN" ]; then
+          echo "SNYK_TOKEN is missing"
+          exit 1
+        fi
+        echo "SNYK_TOKEN is available"
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+    - name: Run Snyk Code scan - SAST
+      if: ${{ !cancelled() }}
+      run: snyk code test --severity-threshold=high --debug
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
