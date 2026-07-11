@@ -1,0 +1,38 @@
+rules:
+  - id: javascript-sql-string-concatenation
+    message: Possible SQL Injection due to string concatenation in SQL query.
+    severity: ERROR
+    languages: [javascript]
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $SQL = "SELECT" + ...
+          - pattern: |
+              $SQL = "SELECT ... " + $INPUT + ...
+
+  - id: hardcoded-secret-training
+    message: Hardcoded secret detected.
+    severity: ERROR
+    languages: [javascript]
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $KEY = "SuperSecretHardcodedJwtKey123!"
+          - pattern: |
+              $KEY = "P@ssword123-hardcoded"
+          - pattern: |
+              $KEY = "admin-api-key-123456"
+
+  - id: sensitive-password-logging
+    message: Sensitive password value may be logged.
+    severity: WARNING
+    languages: [javascript]
+    pattern: |
+      console.log(..., { ..., password, ... })
+
+  - id: md5-password-hashing
+    message: Weak MD5 password hashing detected.
+    severity: ERROR
+    languages: [javascript]
+    pattern: |
+      crypto.createHash("md5")

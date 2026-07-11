@@ -1,0 +1,35 @@
+name: Security and Test Pipeline
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  test-and-security:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run unit/security tests
+        run: npm test
+
+      - name: Run SCA dependency audit
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+      - name: Run Semgrep SAST
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: semgrep-rules.yml
+        continue-on-error: true
