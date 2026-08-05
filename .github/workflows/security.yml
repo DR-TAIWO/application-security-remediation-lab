@@ -48,7 +48,7 @@ jobs:
         run: npm install --global snyk
 
       - name: Run Snyk Open Source scan
-        run: snyk test --severity-threshold=high
+        run: snyk test --json --severity-threshold=high > snyk.json
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
